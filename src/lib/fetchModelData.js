@@ -1,19 +1,7 @@
-export default function fetchModel(url) {
-  return new Promise(function (resolve, reject) {
-    fetch(url)
-      .then((response) => {
-        // Nếu server báo lỗi (ví dụ sai ID, lỗi mạng)
-        if (!response.ok) {
-          reject(new Error(response.statusText));
-        }
-        // Nếu thành công thì ép kiểu dữ liệu về JSON
-        return response.json();
-      })
-      .then((data) => {
-        resolve(data); // Trả cục dữ liệu về cho React xử lý
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
+import { apiGet } from "./api";
+
+// Backwards-compatible fetchModel: takes a path (e.g. "/user/list"), performs
+// an authenticated GET against the backend, and resolves with the JSON data.
+export default function fetchModel(path) {
+  return apiGet(path);
 }
