@@ -1,43 +1,31 @@
 import React, { useState, useEffect } from "react";
-import { Typography, Button, Paper, Divider } from "@mui/material";
-import { useParams, Link } from "react-router-dom";
+import { Typography, Button, Divider } from "@mui/material";
+import { Link, useParams } from "react-router-dom";
 import fetchModel from "../../lib/fetchModelData";
 
-export default function UserDetail() {
-  const { userId } = useParams();
+function UserDetail() {
   const [user, setUser] = useState(null);
+  const { userId } = useParams();
 
   useEffect(() => {
-    setUser(null);
     fetchModel(`/user/${userId}`)
-      .then((data) => setUser(data))
-      .catch((err) => console.error("Error loading user detail:", err));
+      .then((res) => setUser(res.data))
+      .catch(console.error);
   }, [userId]);
 
-  if (!user) {
-    return <Typography style={{ padding: "20px" }}>Connecting to server...</Typography>;
-  }
-
+  if (!user) return <Typography>Đang tải...</Typography>;
   return (
-    <Paper style={{ padding: "20px", margin: "20px" }}>
-      <Typography variant="h4">
-        {user.first_name} {user.last_name}
-      </Typography>
+    <div style={{ padding: 20 }}>
+      <Typography variant="h4">{user.first_name} {user.last_name}</Typography>
       <Divider style={{ margin: "15px 0" }} />
-      <Typography variant="body1"><strong>Location:</strong> {user.location}</Typography>
-      <Typography variant="body1"><strong>Occupation:</strong> {user.occupation}</Typography>
-      <Typography variant="body1" style={{ marginTop: "10px" }}>
-        <strong>Description:</strong> {user.description}
-      </Typography>
-      <Button
-        variant="contained"
-        color="primary"
-        component={Link}
-        to={`/photos/${user._id}`}
-        style={{ marginTop: "20px" }}
-      >
-        View photos
+      <Typography>Nơi ở: {user.location}</Typography>
+      <Typography>Nghề nghiệp: {user.occupation}</Typography>
+      <Typography>Mô tả: {user.description}</Typography>
+      <Button variant="contained" component={Link}
+        to={`/photos/${userId}`} style={{ marginTop: 20 }}>
+        Xem ảnh
       </Button>
-    </Paper>
+    </div>
   );
 }
+export default UserDetail;
